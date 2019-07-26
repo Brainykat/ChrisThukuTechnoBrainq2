@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Employee.Domain
 {
 	public class Employees
 	{
 		private string _cSVPath;
-		public Employees(string cSvPath)
+		private readonly ICsvReader _csvReader;
+		public Employees(string cSvPath, ICsvReader csvReader)
 		{
-			_cSVPath = cSvPath ?? throw new ArgumentNullException(nameof(cSvPath));
+			if (string.IsNullOrWhiteSpace(cSvPath)) throw new ArgumentNullException(nameof(cSvPath));
+			_cSVPath = cSvPath; //?? throw new ArgumentNullException(nameof(cSvPath));
+			_csvReader = csvReader;
 		}
 
 		private Employees(){}
 
 		public List<Employee> GetEmployeeRecords()
 		{
-			var employees = CsvReader.GetEmployees(_cSVPath);
+			var employees = _csvReader.GetEmployees(_cSVPath);
 
 			if (employees != null)
 			{
@@ -30,7 +32,7 @@ namespace Employee.Domain
 		}
 		public long GetManagerBudget(string managerId)
 		{
-			var employees = CsvReader.GetEmployees(_cSVPath);
+			var employees = _csvReader.GetEmployees(_cSVPath);
 
 			if (employees != null)
 			{
