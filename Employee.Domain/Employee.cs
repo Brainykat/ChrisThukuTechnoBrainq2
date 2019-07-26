@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Employee.Domain
@@ -20,9 +21,12 @@ namespace Employee.Domain
 			ManagerId = managerId;
 			Salary = salary;
 		}
-		public Employee Create(string id, string managerId, decimal salary)
+		public static Employee Create(string id, string managerId, decimal salary)
 		{
 			return new Employee(id, managerId, salary);
 		}
+
+		
+		
 	}
 }
