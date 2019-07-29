@@ -13,11 +13,12 @@ namespace Employee.Domain
 			List<Employee> employees = new List<Employee>();
 			using (StreamReader sr = new StreamReader(csvFilePath))
 			{
-				sr.ReadLine();
+				sr.ReadLine(); //Bug
 				string csvLine;
 				while ((csvLine = sr.ReadLine()) != null)
 				{
-					employees.Add(ReadFromCSVLine.ReadEmployeeFromCSVLine(csvLine));
+					//employees.Add(ReadFromCSVLine.ReadEmployeeFromCSVLine(csvLine));
+					employees.Add(csvLine.ReadEmployeeFromCSVLine());
 				}
 			}
 			return employees;

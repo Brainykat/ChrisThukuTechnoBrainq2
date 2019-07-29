@@ -29,10 +29,10 @@ namespace Employee.Domain
 			}
 			foreach (var employee in _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null))
 			{
-				var id = _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null)
+				var manager = _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null)
 					.FirstOrDefault(e => e.Id == employee.ManagerId);
-				if(id != null)
-				if (id.ManagerId == employee.Id)
+				if(manager != null)
+				if (manager.ManagerId == employee.Id)
 					throw new Exception("Cyclic Reference detected");
 			}
 			return true;
