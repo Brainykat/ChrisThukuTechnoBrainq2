@@ -10,7 +10,7 @@ namespace Employee.Domain.Tests
 	public class EmployeesTests
 	{
 		private readonly Employees _employees;
-		private string _cSVPath = @"C:\Impo\ChrisThukuTechnoBrainq2\data.csv";
+		private string _cSVPath = @"data.csv";
 		private readonly Mock<ICsvReader> _csvReaderMock = new Mock<ICsvReader>();
 		public EmployeesTests()
 		{

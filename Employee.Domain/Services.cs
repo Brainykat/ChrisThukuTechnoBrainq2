@@ -20,7 +20,8 @@ namespace Employee.Domain
 			var managers = _employees.Where(r=>r.ManagerId != null && r.ManagerId != string.Empty).Select(e => e.ManagerId);
 			foreach (var manager in managers)
 			{
-				if(_employees.FirstOrDefault(e => e.Id == manager) == null) throw new Exception("Some Managers not listed");
+				if(_employees.FirstOrDefault(e => e.Id == manager) == null)
+					throw new Exception("Some Managers not listed"); // Bad practice to use base exception 
 			}
 			foreach (var id in _employees.Select(e => e.Id).Distinct())
 			{
