@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Employee.Domain.Tests
 {
-	public class ServicesTests
+	public class EmployeeServicesTests
 	{
 		[Fact]
 		public void ValidateEmployees_ThrowsException_WhenTheresMoreThanOneCeo()
@@ -64,6 +64,15 @@ namespace Employee.Domain.Tests
 			services.ValidateEmployees();
 			Assert.False(services.IsValid);
 			Assert.Contains(services.ValidationErrors, m => m.Message == "Cyclic Reference detected");
+		}
+		[Theory]
+		[InlineData("")]
+		[InlineData(" ")]
+		[InlineData(null)]
+		public void GetManagersBudget_ThrowsArgumentNullException_WhenIdIsInvalid(string managerId)
+		{
+			EmployeesServices services = new EmployeesServices(new List<Employee>());
+			Assert.Throws<ArgumentNullException>(nameof(managerId), () => services.GetManagersBudget(managerId));
 		}
 		[Theory]
 		[InlineData("Employee2", 1800)]

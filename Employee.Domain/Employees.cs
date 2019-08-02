@@ -9,8 +9,7 @@ namespace Employee.Domain
 		private readonly ICsvReader _csvReader;
 		public Employees(string cSvPath, ICsvReader csvReader)
 		{
-			if (string.IsNullOrWhiteSpace(cSvPath)) throw new ArgumentNullException(nameof(cSvPath));
-			_cSVPath = cSvPath; 
+			_cSVPath = string.IsNullOrWhiteSpace(cSvPath) ? throw new ArgumentNullException(nameof(cSvPath)) : cSvPath;
 			_csvReader = csvReader;
 		}
 

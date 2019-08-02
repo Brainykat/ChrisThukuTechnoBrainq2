@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Employee.Domain
 {
-	public class EmployeesServices 
+	public class EmployeesServices
 	{
 
 		private List<Employee> _employees;
@@ -20,7 +20,7 @@ namespace Employee.Domain
 		{
 			CheckNumberOfCEOs();
 			CheckEmployeeWithMoreThanOneManger();
-			CheckAllManagersListed();
+			CheckAllManagersAreListed();
 			CheckCyclicReference();
 		}
 		private void CheckNumberOfCEOs()
@@ -31,7 +31,7 @@ namespace Employee.Domain
 				ValidationErrors.Add(new Exception("More than one CEO listed"));
 			}
 		}
-		private void CheckAllManagersListed()
+		private void CheckAllManagersAreListed()
 		{
 			var managers = _employees.Where(r => r.ManagerId != null && r.ManagerId != string.Empty).Select(e => e.ManagerId);
 			foreach (var manager in managers)
@@ -70,9 +70,9 @@ namespace Employee.Domain
 		}
 		public long GetManagersBudget(string managerId)
 		{
+			if (string.IsNullOrWhiteSpace(managerId)) throw new ArgumentNullException(nameof(managerId));
 			decimal total = 0;
 			total += _employees.FirstOrDefault(e => e.Id == managerId).Salary;
-
 			foreach (var item in _employees.Where(e => e.ManagerId == managerId))
 			{
 				if (isManager(item.Id))
@@ -85,7 +85,6 @@ namespace Employee.Domain
 				}
 			}
 			return Convert.ToInt64(total);
-
 		}
 		private bool isManager(string id) => _employees.Where(e => e.ManagerId == id).Count() > 0;
 	}
