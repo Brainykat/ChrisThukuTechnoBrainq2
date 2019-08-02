@@ -15,7 +15,7 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee1",null,100),
 				Employee.Create("Employee2","",100)
 			};
-			Services services = new Services(employees);
+			EmployeesServices services = new EmployeesServices(employees);
 			services.ValidateEmployees();
 			Assert.False(services.IsValid);
 			Assert.Contains(services.ValidationErrors, m => m.Message == "More than one CEO listed");
@@ -29,7 +29,7 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee1","Employee2",100),
 				Employee.Create("Employee2","Employee3",100)
 			};
-			Services services = new Services(employees);
+			EmployeesServices services = new EmployeesServices(employees);
 			services.ValidateEmployees();
 			Assert.False(services.IsValid);
 			Assert.Contains(services.ValidationErrors, m => m.Message == "Some Managers not listed");
@@ -45,7 +45,7 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee3","Employee1",100),
 				Employee.Create("Employee3","Employee2",100)
 			};
-			Services services = new Services(employees);
+			EmployeesServices services = new EmployeesServices(employees);
 			services.ValidateEmployees();
 			Assert.False(services.IsValid);
 			Assert.Contains(services.ValidationErrors, m => m.Message == "Employee Employee3 has more than one manager");
@@ -60,7 +60,7 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee2","Employee1",100),
 				Employee.Create("Employee1","Employee2",100)
 			};
-			Services services = new Services(employees);
+			EmployeesServices services = new EmployeesServices(employees);
 			services.ValidateEmployees();
 			Assert.False(services.IsValid);
 			Assert.Contains(services.ValidationErrors, m => m.Message == "Cyclic Reference detected");
@@ -80,7 +80,7 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee6","Employee2",500),
 				Employee.Create("Employee5","Employee1",500)
 			};
-			Services services = new Services(employees);
+			EmployeesServices services = new EmployeesServices(employees);
 			var result = services.GetManagersBudget(managerId);
 			Assert.Equal(expected, result);
 		}

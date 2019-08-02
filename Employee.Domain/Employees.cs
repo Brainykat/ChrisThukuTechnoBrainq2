@@ -10,7 +10,7 @@ namespace Employee.Domain
 		public Employees(string cSvPath, ICsvReader csvReader)
 		{
 			if (string.IsNullOrWhiteSpace(cSvPath)) throw new ArgumentNullException(nameof(cSvPath));
-			_cSVPath = cSvPath; //?? throw new ArgumentNullException(nameof(cSvPath));
+			_cSVPath = cSvPath; 
 			_csvReader = csvReader;
 		}
 
@@ -21,7 +21,7 @@ namespace Employee.Domain
 			var employees = _csvReader.GetEmployees(_cSVPath);
 			if (employees != null)
 			{
-				Services services = new Services(employees);
+				EmployeesServices services = new EmployeesServices(employees);
 				services.ValidateEmployees();
 				if (services.IsValid)
 				{
@@ -37,7 +37,7 @@ namespace Employee.Domain
 
 			if (employees != null)
 			{
-				Services services = new Services(employees);
+				EmployeesServices services = new EmployeesServices(employees);
 				return services.GetManagersBudget(managerId);
 			}
 			return 0;

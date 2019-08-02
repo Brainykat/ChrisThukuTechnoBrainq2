@@ -4,18 +4,18 @@ using System.Linq;
 
 namespace Employee.Domain
 {
-	public class Services 
+	public class EmployeesServices 
 	{
 
 		private List<Employee> _employees;
 		public bool IsValid { get; private set; } = true;
 		public List<Exception> ValidationErrors { get; private set; } = new List<Exception>();
 
-		public Services(List<Employee> employees)
+		public EmployeesServices(List<Employee> employees)
 		{
 			_employees = employees ?? throw new ArgumentNullException(nameof(employees));
 		}
-		private Services() { }
+		private EmployeesServices() { }
 		public void ValidateEmployees()
 		{
 			CheckNumberOfCEOs();
