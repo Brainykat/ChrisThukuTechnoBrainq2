@@ -16,8 +16,9 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee2","",100)
 			};
 			Services services = new Services(employees);
-			var result = Assert.Throws<Exception>( () => services.ValidateEmployees());
-			Assert.Equal("More than one CEO", result.Message);
+			services.ValidateEmployees();
+			Assert.False(services.IsValid);
+			Assert.Contains(services.ValidationErrors, m => m.Message == "More than one CEO listed");
 		}
 
 		[Fact]
@@ -29,8 +30,9 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee2","Employee3",100)
 			};
 			Services services = new Services(employees);
-			var result = Assert.Throws<Exception>(() => services.ValidateEmployees());
-			Assert.Equal("Some Managers not listed", result.Message);
+			services.ValidateEmployees();
+			Assert.False(services.IsValid);
+			Assert.Contains(services.ValidationErrors, m => m.Message == "Some Managers not listed");
 		}
 
 		[Fact]
@@ -44,8 +46,9 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee3","Employee2",100)
 			};
 			Services services = new Services(employees);
-			var result = Assert.Throws<Exception>(() => services.ValidateEmployees());
-			Assert.Contains("Employee3", result.Message);
+			services.ValidateEmployees();
+			Assert.False(services.IsValid);
+			Assert.Contains(services.ValidationErrors, m => m.Message == "Employee Employee3 has more than one manager");
 		}
 
 		[Fact]
@@ -58,8 +61,9 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee1","Employee2",100)
 			};
 			Services services = new Services(employees);
-			var result = Assert.Throws<Exception>(() => services.ValidateEmployees());
-			//Assert.Contains("Cyclic", result.Message);
+			services.ValidateEmployees();
+			Assert.False(services.IsValid);
+			Assert.Contains(services.ValidationErrors, m => m.Message == "Cyclic Reference detected");
 		}
 		[Theory]
 		[InlineData("Employee2", 1800)]

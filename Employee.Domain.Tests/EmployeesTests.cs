@@ -31,6 +31,20 @@ namespace Employee.Domain.Tests
 			var result = _employees.GetEmployeeRecords();
 			Assert.Null(result);
 		}
+
+		[Fact]
+		public void Employees_ThrowsAggregateException_WhenEmployeesAreInvald()
+		{
+			List<Employee> employees = new List<Employee>
+			{
+				Employee.Create("Employee0","",100),
+				Employee.Create("Employee2","Employee1",100),
+				Employee.Create("Employee1","Employee2",100),
+				Employee.Create("Employee1","",1100)
+			};
+			_csvReaderMock.Setup(k => k.GetEmployees(_cSVPath)).Returns(employees);
+			Assert.Throws<AggregateException>(() => _employees.GetEmployeeRecords());
+		}
 		[Fact]
 		public void GetEmployeeRecords_ReturnsEmployees()
 		{
@@ -54,8 +68,11 @@ namespace Employee.Domain.Tests
 			var result = _employees.GetManagerBudget("Employee1");
 			Assert.Equal(0,result);
 		}
-		[Fact]
-		public void GetManagerBudget_ReturnsManagersBudget()
+		[Theory]
+		[InlineData("Employee2",1800)]
+		[InlineData("Employee3",500)]
+		[InlineData("Employee1", 3800)]
+		public void GetManagerBudget_ReturnsManagersBudget(string employeeId, long budget)
 		{
 			List<Employee> employees = new List<Employee>
 			{
@@ -67,8 +84,8 @@ namespace Employee.Domain.Tests
 				Employee.Create("Employee5","Employee1",500)
 			};
 			_csvReaderMock.Setup(k => k.GetEmployees(_cSVPath)).Returns(employees);
-			var result = _employees.GetManagerBudget("Employee1");
-			Assert.Equal(3800, result);
+			var result = _employees.GetManagerBudget(employeeId);
+			Assert.Equal(budget, result);
 		}
 	}
 }

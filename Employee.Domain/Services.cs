@@ -4,39 +4,69 @@ using System.Linq;
 
 namespace Employee.Domain
 {
-	public class Services
+	public class Services 
 	{
 
 		private List<Employee> _employees;
+		public bool IsValid { get; private set; } = true;
+		public List<Exception> ValidationErrors { get; private set; } = new List<Exception>();
 
 		public Services(List<Employee> employees)
 		{
 			_employees = employees ?? throw new ArgumentNullException(nameof(employees));
 		}
 		private Services() { }
-		public bool ValidateEmployees()
+		public void ValidateEmployees()
 		{
-			if (_employees.Where(e => e.ManagerId == string.Empty || e.ManagerId == null).Count() > 1) throw new Exception("More than one CEO");
-			var managers = _employees.Where(r=>r.ManagerId != null && r.ManagerId != string.Empty).Select(e => e.ManagerId);
+			CheckNumberOfCEOs();
+			CheckEmployeeWithMoreThanOneManger();
+			CheckAllManagersListed();
+			CheckCyclicReference();
+		}
+		private void CheckNumberOfCEOs()
+		{
+			if (_employees.Where(e => e.ManagerId == string.Empty || e.ManagerId == null).Count() > 1)
+			{
+				IsValid = false;
+				ValidationErrors.Add(new Exception("More than one CEO listed"));
+			}
+		}
+		private void CheckAllManagersListed()
+		{
+			var managers = _employees.Where(r => r.ManagerId != null && r.ManagerId != string.Empty).Select(e => e.ManagerId);
 			foreach (var manager in managers)
 			{
-				if(_employees.FirstOrDefault(e => e.Id == manager) == null)
-					throw new Exception("Some Managers not listed"); // Bad practice to use base exception 
+				if (_employees.FirstOrDefault(e => e.Id == manager) == null)
+				{
+					IsValid = false;
+					ValidationErrors.Add(new Exception("Some Managers not listed"));
+				}
 			}
+		}
+		private void CheckEmployeeWithMoreThanOneManger()
+		{
 			foreach (var id in _employees.Select(e => e.Id).Distinct())
 			{
 				if (_employees.Where(i => i.Id == id).Select(m => m.ManagerId).Distinct().Count() > 1)
-					throw new Exception($"Employee {id} has more than one manager");
+				{
+					IsValid = false;
+					ValidationErrors.Add(new Exception($"Employee {id} has more than one manager"));
+				}
 			}
+		}
+		private void CheckCyclicReference()
+		{
 			foreach (var employee in _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null))
 			{
 				var manager = _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null)
 					.FirstOrDefault(e => e.Id == employee.ManagerId);
-				if(manager != null)
-				if (manager.ManagerId == employee.Id)
-					throw new Exception("Cyclic Reference detected");
+				if (manager != null)
+					if (manager.ManagerId == employee.Id)
+					{
+						IsValid = false;
+						ValidationErrors.Add(new Exception("Cyclic Reference detected"));
+					}
 			}
-			return true;
 		}
 		public long GetManagersBudget(string managerId)
 		{
@@ -47,7 +77,7 @@ namespace Employee.Domain
 			{
 				if (isManager(item.Id))
 				{
-					 total += GetManagersBudget(item.Id);
+					total += GetManagersBudget(item.Id);
 				}
 				else
 				{

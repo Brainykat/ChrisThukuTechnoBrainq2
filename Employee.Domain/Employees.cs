@@ -19,14 +19,15 @@ namespace Employee.Domain
 		public List<Employee> GetEmployeeRecords()
 		{
 			var employees = _csvReader.GetEmployees(_cSVPath);
-
 			if (employees != null)
 			{
 				Services services = new Services(employees);
-				if (services.ValidateEmployees())
+				services.ValidateEmployees();
+				if (services.IsValid)
 				{
 					return employees;
 				}
+				throw new AggregateException(services.ValidationErrors);
 			}
 			return null;
 		}
