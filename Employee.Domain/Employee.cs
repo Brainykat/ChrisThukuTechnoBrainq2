@@ -11,7 +11,7 @@ namespace Employee.Domain
 		public string ManagerId { get; set; }
 
 		public decimal Salary { get; set; }
-		private Employee(){}
+		private Employee() { }
 
 		private Employee(string id, string managerId, decimal salary)
 		{
@@ -25,8 +25,5 @@ namespace Employee.Domain
 		{
 			return new Employee(id, managerId, salary);
 		}
-
-		
-		
 	}
 }

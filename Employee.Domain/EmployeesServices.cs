@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Employee.Domain
@@ -13,6 +14,7 @@ namespace Employee.Domain
 
 		public EmployeesServices(List<Employee> employees)
 		{
+			//Debug.Assert(employees != null, "Cannot validate Null employee list"); // Asserting invariant 
 			_employees = employees ?? throw new ArgumentNullException(nameof(employees));
 		}
 		private EmployeesServices() { }

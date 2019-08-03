@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Employee.Domain
 {
@@ -15,9 +16,9 @@ namespace Employee.Domain
 
 		private Employees(){}
 
-		public List<Employee> GetEmployeeRecords()
+		public async Task<List<Employee>> GetEmployeeRecords()
 		{
-			var employees = _csvReader.GetEmployees(_cSVPath);
+			var employees = await _csvReader.GetEmployees(_cSVPath);
 			if (employees != null)
 			{
 				EmployeesServices services = new EmployeesServices(employees);
@@ -30,9 +31,9 @@ namespace Employee.Domain
 			}
 			return null;
 		}
-		public long GetManagerBudget(string managerId)
+		public async Task<long> GetManagerBudget(string managerId)
 		{
-			var employees = _csvReader.GetEmployees(_cSVPath);
+			var employees = await _csvReader.GetEmployees(_cSVPath);
 
 			if (employees != null)
 			{
