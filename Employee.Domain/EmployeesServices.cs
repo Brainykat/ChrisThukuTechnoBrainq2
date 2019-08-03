@@ -37,39 +37,33 @@ namespace Employee.Domain
 		}
 		private void CheckAllManagersAreListed()
 		{
-			var managers = _employees.Where(r => r.ManagerId != null && r.ManagerId != string.Empty).Select(e => e.ManagerId);
-			foreach (var manager in managers)
+			foreach (var _ in _employees.Where(r => r.ManagerId != null && r.ManagerId != string.Empty)
+				.Select(e => e.ManagerId).Where(manager => _employees.FirstOrDefault(e => e.Id == manager) == null).Select(manager => new { }))
 			{
-				if (_employees.FirstOrDefault(e => e.Id == manager) == null)
-				{
-					IsValid = false;
-					ValidationErrors.Add(new Exception("Some Managers not listed"));
-				}
+				IsValid = false;
+				ValidationErrors.Add(new Exception("Some Managers not listed"));
 			}
 		}
 		private void CheckEmployeeWithMoreThanOneManger()
 		{
-			foreach (var id in _employees.Select(e => e.Id).Distinct())
+			foreach (var id in _employees.Select(e => e.Id).Distinct().Where(id => _employees.Where(i => i.Id == id)
+			.Select(m => m.ManagerId).Distinct().Count() > 1).Select(id => id))
 			{
-				if (_employees.Where(i => i.Id == id).Select(m => m.ManagerId).Distinct().Count() > 1)
-				{
-					IsValid = false;
-					ValidationErrors.Add(new Exception($"Employee {id} has more than one manager"));
-				}
+				IsValid = false;
+				ValidationErrors.Add(new Exception($"Employee {id} has more than one manager"));
 			}
 		}
 		private void CheckCyclicReference()
 		{
-			foreach (var employee in _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null))
+			foreach (var _ in from employee in _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null)
+							  let manager = _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null)
+						.FirstOrDefault(e => e.Id == employee.ManagerId)
+							  where manager != null
+							  where manager.ManagerId == employee.Id
+							  select new { })
 			{
-				var manager = _employees.Where(e => e.ManagerId != string.Empty && e.ManagerId != null)
-					.FirstOrDefault(e => e.Id == employee.ManagerId);
-				if (manager != null)
-					if (manager.ManagerId == employee.Id)
-					{
-						IsValid = false;
-						ValidationErrors.Add(new Exception("Cyclic Reference detected"));
-					}
+				IsValid = false;
+				ValidationErrors.Add(new Exception("Cyclic Reference detected"));
 			}
 		}
 		public long GetManagersBudget(string managerId)
