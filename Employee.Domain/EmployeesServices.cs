@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Employee.Domain
 {
@@ -20,10 +20,12 @@ namespace Employee.Domain
 		private EmployeesServices() { }
 		public void ValidateEmployees()
 		{
-			CheckNumberOfCEOs();
-			CheckEmployeeWithMoreThanOneManger();
-			CheckAllManagersAreListed();
-			CheckCyclicReference();
+			Parallel.Invoke(
+				() => { CheckNumberOfCEOs(); },
+				() => { CheckEmployeeWithMoreThanOneManger(); },
+				() => { CheckAllManagersAreListed(); },
+				() => { CheckCyclicReference(); }
+				);
 		}
 		private void CheckNumberOfCEOs()
 		{
