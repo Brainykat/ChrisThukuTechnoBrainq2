@@ -7,26 +7,21 @@ namespace Employee.Domain
 {
 	public class EmployeesServices
 	{
-
 		private List<Employee> _employees;
 		public bool IsValid { get; private set; } = true;
 		public List<Exception> ValidationErrors { get; private set; } = new List<Exception>();
-
 		public EmployeesServices(List<Employee> employees)
 		{
 			//Debug.Assert(employees != null, "Cannot validate Null employee list"); // Asserting invariant 
 			_employees = employees ?? throw new ArgumentNullException(nameof(employees));
 		}
 		private EmployeesServices() { }
-		public void ValidateEmployees()
-		{
-			Parallel.Invoke(
+		public void ValidateEmployees() => Parallel.Invoke(
 				() => { CheckNumberOfCEOs(); },
 				() => { CheckEmployeeWithMoreThanOneManger(); },
 				() => { CheckAllManagersAreListed(); },
 				() => { CheckCyclicReference(); }
 				);
-		}
 		private void CheckNumberOfCEOs()
 		{
 			if (_employees.Where(e => e.ManagerId == string.Empty || e.ManagerId == null).Count() > 1)
@@ -71,9 +66,9 @@ namespace Employee.Domain
 			if (string.IsNullOrWhiteSpace(managerId)) throw new ArgumentNullException(nameof(managerId));
 			decimal total = 0;
 			total += _employees.FirstOrDefault(e => e.Id == managerId).Salary;
-			foreach (var item in _employees.Where(e => e.ManagerId == managerId))
+			foreach (Employee item in _employees.Where(e => e.ManagerId == managerId))
 			{
-				if (isManager(item.Id))
+				if (IsManager(item.Id))
 				{
 					total += GetManagersBudget(item.Id);
 				}
@@ -84,6 +79,6 @@ namespace Employee.Domain
 			}
 			return Convert.ToInt64(total);
 		}
-		private bool isManager(string id) => _employees.Where(e => e.ManagerId == id).Count() > 0;
+		private bool IsManager(string id) => _employees.Where(e => e.ManagerId == id).Count() > 0;
 	}
 }
