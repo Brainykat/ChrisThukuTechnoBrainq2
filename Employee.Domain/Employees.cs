@@ -34,7 +34,6 @@ namespace Employee.Domain
 		public async Task<long> GetManagerBudget(string managerId)
 		{
 			var employees = await _csvReader.GetEmployees(_cSVPath);
-
 			if (employees != null)
 			{
 				EmployeesServices services = new EmployeesServices(employees);

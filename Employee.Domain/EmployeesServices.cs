@@ -12,7 +12,6 @@ namespace Employee.Domain
 		public List<Exception> ValidationErrors { get; private set; } = new List<Exception>();
 		public EmployeesServices(List<Employee> employees)
 		{
-			//Debug.Assert(employees != null, "Cannot validate Null employee list"); // Asserting invariant 
 			_employees = employees ?? throw new ArgumentNullException(nameof(employees));
 		}
 		private EmployeesServices() { }
@@ -64,7 +63,7 @@ namespace Employee.Domain
 		public long GetManagersBudget(string managerId)
 		{
 			if (string.IsNullOrWhiteSpace(managerId)) throw new ArgumentNullException(nameof(managerId));
-			decimal total = 0;
+			long total = 0;
 			total += _employees.FirstOrDefault(e => e.Id == managerId).Salary;
 			foreach (Employee item in _employees.Where(e => e.ManagerId == managerId))
 			{
@@ -77,7 +76,7 @@ namespace Employee.Domain
 					total += item.Salary;
 				}
 			}
-			return Convert.ToInt64(total);
+			return total;
 		}
 		private bool IsManager(string id) => _employees.Where(e => e.ManagerId == id).Count() > 0;
 	}

@@ -11,13 +11,13 @@ namespace Employee.Domain.Tests
 		[InlineData(null)]
 		public void Create_ThrowsArgumentNullException_WhenIdIsInvalid(string id)
 		{
-			Assert.Throws<ArgumentNullException>(nameof(id), () => Employee.Create(id, null, default(decimal)));
+			Assert.Throws<ArgumentNullException>(nameof(id), () => Employee.Create(id, null, default(int)));
 		}
 
 		[Fact]
 		public void Create_ThrowsArgumentOutOfRangeException_WhenSalaryIsInvalid()
 		{
-			decimal salary = -1;
+			int salary = -1;
 			Assert.Throws<ArgumentOutOfRangeException>(nameof(salary), () => Employee.Create("E1", null, salary));
 		}
 		[Fact]

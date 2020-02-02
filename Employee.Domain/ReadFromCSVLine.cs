@@ -10,7 +10,7 @@
 				string Id = parts[0];
 				string ManagerId = parts[1];
 				string Salary = parts[2];
-				decimal.TryParse(Salary, out decimal salary);
+				long.TryParse(Salary, out long salary);
 				return Employee.Create(Id, ManagerId, salary);
 			}
 			return null;
